@@ -171,6 +171,26 @@ if [ "${LIMA_INSTALL_DOCKER}" == "true" ]; then
     echo xz >> "$tmp"/etc/apk/world
 fi
 
+# If installing from packages, otherwise from nerdctl-full archive
+if [ "${LIMA_INSTALL_NERDCTL_FULL}" != "true" ]; then
+
+    if [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+       echo nerdctl >> "$tmp"/etc/apk/world
+    fi
+
+    if [ "${LIMA_INSTALL_CONTAINERD}" == "true" ]; then
+        echo runc >> "$tmp"/etc/apk/world
+        echo containerd >> "$tmp"/etc/apk/world
+        rc_add containerd default
+    fi
+
+    if [ "${LIMA_INSTALL_BUILDKIT}" == "true" ]; then
+        echo buildctl >> "$tmp"/etc/apk/world
+        echo buildkit >> "$tmp"/etc/apk/world
+        rc_add buildkitd default
+    fi
+fi
+
 if [ "${LIMA_INSTALL_BINFMT_MISC}" == "true" ]; then
     # install qemu-aarch64 on x86_64 and vice versa
     OTHERARCH=aarch64

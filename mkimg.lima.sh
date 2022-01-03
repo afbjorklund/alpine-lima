@@ -43,6 +43,15 @@ profile_lima() {
             apks="$apks docker-engine docker-openrc docker-cli docker"
             apks="$apks socat xz"
         fi
+        if [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+            apks="$apks nerdctl"
+        fi
+        if [ "${LIMA_INSTALL_CONTAINERD}" == "true" ]; then
+            apks="$apks runc containerd"
+        fi
+        if [ "${LIMA_INSTALL_BUILDKIT}" == "true" ]; then
+            apks="$apks buildctl buildkit"
+        fi
         if [ "${LIMA_INSTALL_LIMA_INIT}" == "true" ]; then
             apks="$apks e2fsprogs lsblk sfdisk shadow sudo udev"
         fi
