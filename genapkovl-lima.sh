@@ -171,6 +171,14 @@ if [ "${LIMA_INSTALL_DOCKER}" == "true" ]; then
     echo xz >> "$tmp"/etc/apk/world
 fi
 
+if [ "${LIMA_INSTALL_PODMAN}" == "true" ]; then
+    echo crun >> "$tmp"/etc/apk/world # "runc"
+    echo conmon >> "$tmp"/etc/apk/world # "containerd"
+    echo catatonit >> "$tmp"/etc/apk/world # "tini"
+    echo cni-plugins >> "$tmp"/etc/apk/world
+    echo podman >> "$tmp"/etc/apk/world
+fi
+
 # /proc/sys/fs/binfmt_misc must exist for /etc/init.d/procfs to load
 # the binfmt-misc kernel module, which will then mount the filesystem.
 # This is needed for Rosetta to register.
