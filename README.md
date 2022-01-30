@@ -38,6 +38,10 @@ The "nc" edition is the same as "std" plus `nerdctl` pre-installed, including co
 
 The "pm" edition is the same as "std" plus `podman` pre-installed, by default without daemons.
 
+### Docker: de
+
+The "de" edition is the same as "std" plus `docker` pre-installed, that is: Docker Engine.
+
 ### Kubernetes: k3s
 
 The "k3s" edition is the same as "ci" plus `k3s` pre-installed. This is still subject to change.
