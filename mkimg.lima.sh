@@ -28,6 +28,9 @@ profile_lima() {
         if [ "${LIMA_INSTALL_CONTAINERD}" == "true" ]; then
             apks="$apks runc containerd cni-plugins"
 	fi
+        if [ "${LIMA_INSTALL_PODMAN}" == "true" ]; then
+            apks="$apks crun conmon catatonit cni-plugins podman"
+        fi
         if [ "${LIMA_INSTALL_LIMA_INIT}" == "true" ]; then
             apks="$apks e2fsprogs lsblk sfdisk shadow sudo udev"
         fi
