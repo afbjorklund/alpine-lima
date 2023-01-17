@@ -171,6 +171,26 @@ if [ "${LIMA_INSTALL_DOCKER}" == "true" ]; then
     echo xz >> "$tmp"/etc/apk/world
 fi
 
+# If installing from packages, otherwise from nerdctl-full archive
+if [ "${LIMA_INSTALL_NERDCTL_FULL}" != "true" ]; then
+
+    if [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+       echo nerdctl >> "$tmp"/etc/apk/world
+    fi
+
+    if [ "${LIMA_INSTALL_CONTAINERD}" == "true" ]; then
+        echo runc >> "$tmp"/etc/apk/world
+        echo containerd >> "$tmp"/etc/apk/world
+        rc_add containerd default
+    fi
+
+    if [ "${LIMA_INSTALL_BUILDKIT}" == "true" ]; then
+        echo buildctl >> "$tmp"/etc/apk/world
+        echo buildkit >> "$tmp"/etc/apk/world
+        rc_add buildkitd default
+    fi
+fi
+
 if [ "${LIMA_INSTALL_BINFMT_MISC}" == "true" ]; then
     # install qemu-aarch64 on x86_64 and vice versa
     OTHERARCH=aarch64
@@ -211,7 +231,7 @@ if [ "${LIMA_INSTALL_CA_CERTIFICATES}" == "true" ]; then
     echo "ca-certificates" >> "$tmp"/etc/apk/world
 fi
 
-if [ "${LIMA_INSTALL_CNI_PLUGINS}" == "true" ] || [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+if [ "${LIMA_INSTALL_CNI_PLUGINS}" == "true" ] || [ "${LIMA_INSTALL_NERDCTL_FULL}" == "true" ]; then
     echo "cni-plugins" >> "$tmp"/etc/apk/world
 fi
 
@@ -246,18 +266,20 @@ if [ "${LIMA_INSTALL_LOGROTATE}" == "true" ]; then
     echo "logrotate" >> "$tmp"/etc/apk/world
 fi
 
-if [ "${LIMA_INSTALL_IPTABLES}" == "true" ] || [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+if [ "${LIMA_INSTALL_IPTABLES}" == "true" ] || [ "${LIMA_INSTALL_NERDCTL_FULL}" == "true" ]; then
     echo "iptables ip6tables" >> "$tmp"/etc/apk/world
 fi
 
-if [ "${LIMA_INSTALL_NERDCTL}" == "true" ]; then
+if [ "${LIMA_INSTALL_NERDCTL_FULL}" == "true" ]; then
     mkdir -p "${tmp}/nerdctl"
-    tar xz -C "${tmp}/nerdctl" -f /home/build/nerdctl.tar.gz
+    tar xz -C "${tmp}/nerdctl" -f /home/build/nerdctl-full.tar.gz
 
     mkdir -p "${tmp}/usr/local/bin/"
     for bin in buildctl buildkitd nerdctl; do
         cp "${tmp}/nerdctl/bin/${bin}" "${tmp}/usr/local/bin/${bin}"
-        chmod u+s "${tmp}/usr/local/bin/${bin}"
+        if [ "${LIMA_INSTALL_NERDCTL_SUID}" == "true" ]; then
+            chmod u+s "${tmp}/usr/local/bin/${bin}"
+        fi
     done
 fi
 
